@@ -4,57 +4,32 @@ from contextlib import closing
 import os
 import sys
 import subprocess
-from tempfile import gettempdir
 
-# Create a client using the credentials and region defined in the [adminuser]
-# section of the AWS credentials file (~/.aws/credentials).
 session = Session(profile_name="adminuser")
 polly = session.client("polly")
 
-SSML_START = '<speak>'
-SSML_END = '</speak>'
-SSML_PAUSE = '<break time="1s"/>'
 OUTPUT_FORMAT = 'mp3'
 TEXT_TYPE = 'ssml'
 VOICE_ENGINE = 'neural'  # Make sure that your AWS region supports Neural voice
-AUDIO_STREAM = 'AudioStream'
-TEMP_FILE_PREFIX = 'temp_'
-FINAL_FILE_PREFIX = 'final_'
-SLEEP = 0.2
-
 
 myssml = '<speak> \
-    He was caught up in the game.<break time="1s"/> In the middle of the \
-        10/3/2014 <sub alias="World Wide Web Consortium">W3C</sub> meeting, \
-            he shouted, "Nice job!" quite loudly. When his boss stared at him, he repeated \
-                <amazon:effect name="whispered">"Nice job,"</amazon:effect> in a \
-                    whisper. \
-                        </speak>'
-
-
-
+    Hahahahaha.<break time="1s"/> Thank God \
+        Ayy, ayy <sub alias="Ive been fuckin hoes and poppin pillies">W3C</sub> Man, I feel just like a rockstar (ayy, ayy), \
+            All my brothers got that gas, And they always be smokin like a Rasta. <break time="1s"/> Fuckin with me, call up on a Uzi \
+                <amazon:effect name="whispered">"And show up, man, them the shottas,"</amazon:effect> \
+                    When my homies pull up on your block. \
+                        <prosody rate="80%">They make that thing go grrra-ta-ta-ta</prosody> \
+                            </speak>'
 
 spoken_text = polly.synthesize_speech(Text=myssml, TextType=TEXT_TYPE, OutputFormat=OUTPUT_FORMAT, VoiceId='Matthew', Engine=VOICE_ENGINE)
 
-    # The API response is rich and contains tons of information. 'AudioStream' is what holds the actual speech
-    # recording. This is what we are writing to disk as a binary file.
-#     with open(dir_to_store_output_files_abs_path + f'/%s' % temp_name, 'wb') as f:
-#         f.write(spoken_text[AUDIO_STREAM].read())
-#         f.close()
-
-
-
-
-
-# response = polly.synthesize_speech(Text="Hello Overdosed SSH! Can I call you odssh", OutputFormat="mp3",
-#                                         VoiceId="Matthew")
 with closing(spoken_text["AudioStream"]) as stream:
     output = "speech.mp3"
     with open(output, "wb") as file:
         file.write(stream.read())
         print("saved")
 
-
+# Open the mp3 player and play the audio(optional):ss
 if sys.platform == "win32":
     os.startfile(output)
 else:
