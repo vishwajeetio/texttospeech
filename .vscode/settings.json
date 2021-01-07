@@ -4,5 +4,6 @@
         "**/.gitignore": true,
         "**/trash": true,
         "**/requirements.txt": true
-    }
+    },
+    "jupyter.jupyterServerType": "local"
 }
